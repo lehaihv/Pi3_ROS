@@ -1,0 +1,6 @@
+I had the same problem and I solved it: put your SD card into another OS, then open the file "usercfg.txt" and add this line to the end of the file:
+
+dtoverlay=vc4-fkms-v3d
+
+
+Save and done! Tell me if it worked for you!

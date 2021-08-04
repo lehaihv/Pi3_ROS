@@ -1,0 +1,60 @@
+The steps below were found to provide a persistent WiFi setup using netplan with Ubuntu Server 18.04 ubuntu-18.04.2-preinstalled-server-arm64+raspi3.img.xz image on a Raspberry Pi 3 B+.
+
+Update system:
+
+sudo apt update
+sudo apt full-upgrade
+sudo reboot
+
+Determine interface names:
+
+ip link show
+
+# 1: lo: <LOOPBACK,UP,LOWER_UP> …
+# 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> … state UP …
+# 3: wlan0: <BROADCAST,MULTICAST> … state DOWN 
+Determine your-cloud-init.yaml and open for editing.
+
+cd /etc/netplan/
+ls -l
+# -rw-r--r-- 1 root root 666 May 15 22:00 50-cloud-init.yaml
+### note your *cloud-init.yaml file name
+
+### backup *cloud-init.yaml file
+cp 50-cloud-init.yaml 50-cloud-init.yaml.bak
+### restrict read access
+sudo chmod 640 /etc/netplan/50-cloud-init.yaml
+### edit *cloud-init.yaml
+sudo nano 50-cloud-init.yaml
+Add WiFi access information to your-cloud-init.yaml file.
+
+# This file is generated from information provided by
+# the datasource.  Changes to it will not persist across an instance.
+# To disable cloud-init's network configuration capabilities, write a file
+# /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg with the following:
+# network: {config: disabled}
+network:
+    version: 2
+    ethernets:
+        eth0:
+            optional: true
+            dhcp4: true
+    # add wifi setup information here ...
+    wifis:
+        wlan0:
+            optional: true
+            access-points:
+                "YOUR-SSID-NAME":
+                    password: "YOUR-NETWORK-PASSWORD"
+            dhcp4: true
+Test, generate and apply the changed your-cloud-init.yaml config:
+
+Testing: sudo netplan --debug try (continue even if successful)
+Generate: sudo netplan --debug generate (provides more details in case of issues with the previous command)
+Apply: sudo netplan --debug apply (if no issues during the previous commands)
+Confirmation Test:
+
+sudo reboot
+
+### wait, then without the wired ethernet connected ... 
+ssh ubuntu@wifi-ip-address
