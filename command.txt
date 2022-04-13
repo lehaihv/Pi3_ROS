@@ -1,0 +1,28 @@
+To install classic, simply use the following command:
+
+sudo snap install classic --beta --devmode
+
+
+At this point, we have a ROS node created that will drive our robot as requested in a “command” message. 
+It uses GPIO though, which still requires sudo. Instead of trying to get our workspace working using sudo, 
+let’s temporarily change the permissions of GPIO so that we don’t need sudo (this will be reset upon reboot):
+
+$ sudo chmod a+rw /dev/gpiomem
+
+install i2c:
+
+sudo apt install i2c-tools
+
+Create an I2C usergroup, apply it to the bus and add your user to this group:
+
+sudo groupadd i2c (group may exist already)
+
+sudo chown :i2c /dev/i2c-1 (or i2c-0)
+
+sudo chmod g+rw /dev/i2c-1
+
+sudo usermod -aG i2c *INSERT YOUR USERNAME*
+
+Log out and log in. I was connected via VS code's SSH extension and needed to reboot. Then retry:
+
+i2cdetect -y 1

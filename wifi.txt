@@ -25,7 +25,7 @@ cp 50-cloud-init.yaml 50-cloud-init.yaml.bak
 ### restrict read access
 sudo chmod 640 /etc/netplan/50-cloud-init.yaml
 ### edit *cloud-init.yaml
-sudo nano 50-cloud-init.yaml
+sudo nano /etc/netplan/50-cloud-init.yaml
 Add WiFi access information to your-cloud-init.yaml file.
 
 # This file is generated from information provided by
